@@ -29,8 +29,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "fornecedor",
-        "Type": "API.Entities.Fornecedor",
+        "Name": "fornecedorDTO",
+        "Type": "API.Entities.FornecedorCreateDTO",
         "IsRequired": true
       }
     ],
@@ -48,6 +48,15 @@
           "text/json"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 409
       }
     ]
   },
@@ -96,8 +105,8 @@
         "IsRequired": true
       },
       {
-        "Name": "fornecedor",
-        "Type": "API.Entities.Fornecedor",
+        "Name": "fornecedorDTO",
+        "Type": "API.Entities.FornecedorUpdateDTO",
         "IsRequired": true
       }
     ],
@@ -124,6 +133,15 @@
           "text/json"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 409
       }
     ]
   },

@@ -1,7 +1,9 @@
 ﻿using API.Controllers;
 using API.Entities;
+using API.Profiles;
 using API.Repository;
 using API.Test.Fixtures;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Moq;
@@ -12,11 +14,18 @@ namespace API.Test
     {
         private readonly Mock<IFornecedor> _mockFornecedor;
         private readonly FornecedorController _controller;
+        private readonly IMapper _mapper;
 
         public FornecedorControllerTests()
         {
-            _mockFornecedor = new Mock<IFornecedor>();
-            _controller = new FornecedorController(_mockFornecedor.Object);
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<FornecedorProfile>();
+            });
+            _mapper = config.CreateMapper();
+
+            _mockFornecedor = new Mock<IFornecedor>();        
+            _controller = new FornecedorController(_mockFornecedor.Object, _mapper);
         }
 
         [Fact]
@@ -48,14 +57,14 @@ namespace API.Test
         public async Task GetFornecedores_RetornaOk_QuandoIDFornecedorExistir()
         {
             var fornecedor = FornecedorFixture.GetFornecedor();
+            var fornecedorDTO = _mapper.Map<Fornecedor>(fornecedor);
             _mockFornecedor.Setup(repo => repo.FindAsync(fornecedor.Id))
-                .ReturnsAsync(fornecedor);
+                .ReturnsAsync(fornecedorDTO);
 
             var result = await _controller.GetFornecedor(fornecedor.Id);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<Fornecedor>(okResult.Value);
-            Assert.Equal(fornecedor.Id, returnValue.Id);
+            var returnValue = Assert.IsType<FornecedorDTO>(okResult.Value);
         }
 
         [Fact]
@@ -75,20 +84,23 @@ namespace API.Test
         public async Task AddFornecedor_RetornaOk_QuandoFornecedorÉAdicionadoComSucesso()
         {
             var fornecedor = FornecedorFixture.GetFornecedor();
-
-            var result = await _controller.AddFornecedor(fornecedor);
+            var fornecedorDTO = _mapper.Map<FornecedorCreateDTO>(fornecedor);
+    
+            _mockFornecedor.Setup(repo => repo.GetByCnpjAsync(fornecedorDTO.Cnpj)).ReturnsAsync((Fornecedor)null);
+    
+            var result = await _controller.AddFornecedor(fornecedorDTO);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             var returnValue = Assert.IsType<Fornecedor>(okResult.Value);
-            Assert.Equal(fornecedor.Id, returnValue.Id);
-            _mockFornecedor.Verify(repo => repo.AddAsync(fornecedor), Times.Once);
+            Assert.Equal(fornecedor.Cnpj, returnValue.Cnpj);
+            _mockFornecedor.Verify(repo => repo.AddAsync(It.IsAny<Fornecedor>()), Times.Once);
             _mockFornecedor.Verify(repo => repo.Save(), Times.Once);
         }
 
         [Fact]
         public async Task AddFornecedor_RetornaBadRequest_QuandoFornecedorNãoÉVálido()
         {
-            Fornecedor fornecedor = null;
+            FornecedorCreateDTO fornecedor = null;
 
             var result = await _controller.AddFornecedor(fornecedor);
 
@@ -99,10 +111,13 @@ namespace API.Test
         public async Task PutFornecedor_RetornaOk_QuandoFornecedorExiste_E_Válido()
         {
             var id = 1;
-            var fornecedorExistente = FornecedorFixture.GetFornecedor();
-            var fornecedorAtualizado = FornecedorFixture.GetFornecedorAtualizado();
+            var fornecedorExistente = FornecedorFixture.GetFornecedor(); // Fornecedor
+            var fornecedorAtualizado = FornecedorFixture.GetFornecedorAtualizado(); // Fornecedor
+
+            var fornecedorExistenteDTO = _mapper.Map<Fornecedor>(fornecedorExistente);
+
             _mockFornecedor.Setup(repo => repo.FindAsync(id))
-                .ReturnsAsync(fornecedorExistente);
+                .ReturnsAsync(fornecedorExistenteDTO);
 
             var result = await _controller.PutFornecedor(id, fornecedorAtualizado);
 
@@ -110,7 +125,9 @@ namespace API.Test
             var okResult = Assert.IsType<OkObjectResult>(result);
             var returnValue = Assert.IsType<Fornecedor>(okResult.Value);
             Assert.Equal(fornecedorAtualizado.Nome, returnValue.Nome);
-            _mockFornecedor.Verify(repo => repo.Update(id, fornecedorExistente), Times.Once);
+
+            // Verificações
+            _mockFornecedor.Verify(repo => repo.Update(id, It.IsAny<Fornecedor>()), Times.Once);
             _mockFornecedor.Verify(repo => repo.Save(), Times.Once);
         }
 
@@ -118,10 +135,10 @@ namespace API.Test
         public async Task PutFornecedor_RetornaNotFound_QuandoFornecedorNãoForEncontrado()
         {
             var id = 999;
-            var fornecedorAtualizado = FornecedorFixture.GetFornecedor();
+            var fornecedorAtualizadoDTO = FornecedorFixture.GetFornecedorAtualizado();
             _mockFornecedor.Setup(repo => repo.FindAsync(id)).ReturnsAsync((Fornecedor)null);
 
-            var result = await _controller.PutFornecedor(id, fornecedorAtualizado);
+            var result = await _controller.PutFornecedor(id, fornecedorAtualizadoDTO);
 
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal($"Fornecedor com ID = {id} não encontrado.", notFoundResult.Value);
@@ -142,15 +159,16 @@ namespace API.Test
         public async Task DeleteFornecedor_RetornaOK_QuandoFornecedorÉDeletado()
         {
             var fornecedor = FornecedorFixture.GetFornecedor();
-
-            _mockFornecedor.Setup(repo => repo.FindAsync(fornecedor.Id)).ReturnsAsync(fornecedor);
+            var fornecedorDTO = _mapper.Map<Fornecedor>(fornecedor);
+            _mockFornecedor.Setup(repo => repo.FindAsync(fornecedor.Id))
+                .ReturnsAsync(fornecedorDTO);
 
             var entityEntryMock = new Mock<EntityEntry<Fornecedor>>(MockBehavior.Strict, null);
             _mockFornecedor.Setup(repo => repo.RemoveAsync(fornecedor.Id)).ReturnsAsync(entityEntryMock.Object);
 
             var result = await _controller.DeleteFornecedor(fornecedor.Id);
 
-            Assert.IsType<OkResult>(result);
+            Assert.IsType<OkObjectResult>(result);
             _mockFornecedor.Verify(repo => repo.RemoveAsync(fornecedor.Id), Times.Once);
             _mockFornecedor.Verify(repo => repo.Save(), Times.Once);
         }

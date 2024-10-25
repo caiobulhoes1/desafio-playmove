@@ -10,6 +10,7 @@ public static class ApplicationServiceExtensions
     public static void AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IFornecedor, FornecedorRepository>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
 
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

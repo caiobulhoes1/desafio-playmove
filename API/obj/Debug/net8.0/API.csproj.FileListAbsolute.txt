@@ -39,7 +39,6 @@ D:\Projetos .NET\desafio-playmove\API\obj\Debug\net8.0\refint\API.dll
 D:\Projetos .NET\desafio-playmove\API\obj\Debug\net8.0\API.pdb
 D:\Projetos .NET\desafio-playmove\API\obj\Debug\net8.0\API.genruntimeconfig.cache
 D:\Projetos .NET\desafio-playmove\API\obj\Debug\net8.0\ref\API.dll
-D:\Projetos .NET\desafio-playmove\API\bin\Debug\net8.0\API.staticwebassets.endpoints.json
-D:\Projetos .NET\desafio-playmove\API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\Projetos .NET\desafio-playmove\API\obj\Debug\net8.0\staticwebassets\msbuild.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 D:\Projetos .NET\desafio-playmove\API\obj\Debug\net8.0\API.sourcelink.json
+D:\Projetos .NET\desafio-playmove\API\bin\Debug\net8.0\AutoMapper.dll
+D:\Projetos .NET\desafio-playmove\API\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

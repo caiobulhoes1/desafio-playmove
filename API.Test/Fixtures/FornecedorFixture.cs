@@ -37,9 +37,9 @@ namespace API.Test.Fixtures
             };
         }
 
-        public static Fornecedor GetFornecedor()
+        public static FornecedorDTO GetFornecedor()
         {
-            return new Fornecedor
+            return new FornecedorDTO
             {
                 Id = 1,
                 Nome = "Fornecedor A",
@@ -51,11 +51,10 @@ namespace API.Test.Fixtures
             };
         }
 
-        public static Fornecedor GetFornecedorAtualizado()
+        public static FornecedorUpdateDTO GetFornecedorAtualizado()
         {
-            return new Fornecedor
+            return new FornecedorUpdateDTO
             {
-                Id = 1,
                 Nome = "Fornecedor Atualizado",
                 Email = "fornecedorA@example.com",
                 Telefone = "1234-5678",
