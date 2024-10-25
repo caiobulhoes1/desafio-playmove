@@ -48,16 +48,23 @@ public class FornecedorController : ControllerBase
     [Route("api/fornecedores")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> AddFornecedor(Fornecedor fornecedor)
-    {
-        if (fornecedor != null)
+    {      
+        if (fornecedor == null)
         {
-            await _fornecedor.AddAsync(fornecedor);
-            await _fornecedor.Save();
-            return Ok(fornecedor);
+            return BadRequest();
         }
-        return BadRequest();
 
+        var fornecedorExistente = await _fornecedor.GetByCnpjAsync(fornecedor.Cnpj);
+        if (fornecedorExistente != null)
+        {
+            return Conflict("Fornecedor já cadastrado.");
+        }
+
+        await _fornecedor.AddAsync(fornecedor);
+        await _fornecedor.Save();
+        return Ok(fornecedor);
     }
 
     [HttpPut]

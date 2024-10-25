@@ -115,7 +115,7 @@ namespace API.Test
         }
 
         [Fact]
-        public async Task PutFornecedor_RetornaNotFound_QuandoFornecedorÑãoForEncontrado()
+        public async Task PutFornecedor_RetornaNotFound_QuandoFornecedorNãoForEncontrado()
         {
             var id = 999;
             var fornecedorAtualizado = FornecedorFixture.GetFornecedor();

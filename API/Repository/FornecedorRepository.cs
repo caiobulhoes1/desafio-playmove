@@ -18,7 +18,7 @@ public class FornecedorRepository : IFornecedor
         return _context.Set<Fornecedor>().AddAsync(fornecedor);
     }
 
-    public ValueTask<Fornecedor> FindAsync(int id)
+    public ValueTask<Fornecedor?> FindAsync(int id)
     {
         return _context.Set<Fornecedor>().FindAsync(id);
     }
@@ -26,6 +26,11 @@ public class FornecedorRepository : IFornecedor
     public async Task<Fornecedor[]> GetAllAsync()
     {
         return await _context.Set<Fornecedor>().ToArrayAsync();
+    }
+
+    public async ValueTask<Fornecedor?> GetByCnpjAsync(string cnpj)
+    {
+        return await _context.FornecedorDB.FirstOrDefaultAsync(f => f.Cnpj == cnpj);
     }
 
     public async Task<EntityEntry<Fornecedor>?> RemoveAsync(int id)
