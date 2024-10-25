@@ -14,7 +14,7 @@ Moq. Versão: 4.20.72 <br>
 xUnit Versão: 2.5.3 <br>
 xUnit.Runner.VisualStudio Versão: 2.5.3 <br>
 
-Execução da API:
+Execução da API:  <br>
 Passo 1: Efetuar o clone do projeto. <br>
 Passo 2: Restaurar as bibliotecas utilizadas. <br>
 Passo 3: Acessar pasta desafio-playmove/API. <br>
