@@ -13,6 +13,7 @@ Microsoft.NET.Test.Sdk. Versão: 17.8.0 <br>
 Moq. Versão: 4.20.72 <br>
 xUnit Versão: 2.5.3 <br>
 xUnit.Runner.VisualStudio Versão: 2.5.3 <br>
+AutoMapper. Versão: 12.0.1
 
 Execução da API:  <br>
 Passo 1: Efetuar o clone do projeto. <br>
@@ -36,5 +37,7 @@ de facilitar os testes.
 A validação do modelo foi feita utilizando Regex, portanto, para inserir as informações alguns campos devem ser preenchidos corretamente, por exemplo: <br>
 Campo CNPJ: 00.000.000/0001-01 (OBS: Não foi utilizado API externa para validar se o CNPJ está ativo ou não). <br>
 Campo Telefone: (18) 99000-0000. <br>
+
+Para o desenvolvimento da API, decidi usar uma arquitetura simples e fácil de entender. <br>
 
 Além da implementação dos endpoints da API, também implementei testes unitários para validar as ações (Projeto API.Test). No total são 11 testes unitários. <br>
